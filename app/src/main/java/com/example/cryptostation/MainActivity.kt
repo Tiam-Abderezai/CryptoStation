@@ -10,6 +10,7 @@ import com.example.cryptostation.adapters.CoinAdapter
 import com.example.cryptostation.models.Coin
 import com.example.cryptostation.utils.network.API
 import com.example.cryptostation.utils.network.Constants
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.list_coin.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -30,8 +31,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        mRecyclerView = findViewById(R.id.main_rv)
+        mRecyclerView = findViewById(R.id.main_reclay)
 
+        // When swipe down, refresh page (callCoins() again)
+        main_reflay.setOnRefreshListener {
+            main_reflay.isRefreshing = true
+            callCoins()
+        }
+    }
+
+    // Api call to get crypto coin data
+    private fun callCoins() {
         val okHttpClient: OkHttpClient by lazy {
             val builder = OkHttpClient.Builder()
             val loggingInterceptor = HttpLoggingInterceptor()
@@ -67,6 +77,9 @@ class MainActivity : AppCompatActivity() {
 //                        println(coins.currentPrice)
                         result.add(coins)
 
+                        // When successful, stop showing refresh
+                        main_reflay.isRefreshing = false
+
                     }
                     var adapter = CoinAdapter(result)
                     val layoutManager = LinearLayoutManager(applicationContext)
@@ -81,6 +94,5 @@ class MainActivity : AppCompatActivity() {
 
 
         }
-
     }
 }
