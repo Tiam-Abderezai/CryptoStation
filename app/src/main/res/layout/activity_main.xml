@@ -14,7 +14,9 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/main_reclay"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layoutAnimation="@anim/anim_recyclerview"
+            />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </RelativeLayout>

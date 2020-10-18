@@ -10,7 +10,7 @@ data class Coin(
     @SerializedName("name")
     val name: String,
     @SerializedName("image")
-    val image: String,
+    val imageUrl: String,
     @SerializedName("current_price")
     val currentPrice: Double
 

@@ -1,10 +1,12 @@
 package com.example.cryptostation.adapters
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cryptostation.R
 import com.example.cryptostation.models.Coin
@@ -17,11 +19,16 @@ class CoinAdapter(private var items: ArrayList<Coin>) :
         return items.size
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        var coins = items[position]
-//        holder?.imgImage?.text = coins.image
-        holder?.txtSymbol?.text = coins.symbol.toUpperCase()
-        holder?.txtPrice?.text = coins.currentPrice.toString()
+    fun getItem(position: Int) = items[position]
+
+    @Suppress("UNCHECKED_CAST")
+    override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
+        if (payloads.isEmpty()) {
+            super.onBindViewHolder(holder, position, payloads)
+        } else {
+            holder.txtPrice?.text = getItem(position).toString()
+        }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -37,15 +44,23 @@ class CoinAdapter(private var items: ArrayList<Coin>) :
 
         init {
             this.imgImage = row?.findViewById(R.id.list_coin_image)
-//            Picasso.get(imgImage.context).load(version.imageUrl)
-//                .placeholder(R.mipmap.ic_launcher_round)// optional
-//                .error(R.drawable.sync)// optional
-//                .into(imageView);
-//            loadImageUrl("http://i.imgur.com/DvpvklR.pjdfgdfkhng")
             this.txtSymbol = row?.findViewById(R.id.list_coin_symbol)
             this.txtPrice = row?.findViewById(R.id.list_coin_price)
         }
     }
 
+
+    private val coins = mutableListOf<Coin>()
+
+    init {
+        coins.addAll(items)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        var coins = items[position]
+        Picasso.get().load(coins.imageUrl).into(holder?.imgImage)
+        holder?.txtSymbol?.text = coins.symbol.toUpperCase()
+        holder?.txtPrice?.text = "$" + coins.currentPrice.toString()
+    }
 
 }
