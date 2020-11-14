@@ -12,7 +12,13 @@ data class Coin(
     @SerializedName("image")
     val imageUrl: String,
     @SerializedName("current_price")
-    val currentPrice: Double
-
+    val currentPrice: Double,
+    @SerializedName("price_change_24h")
+    val price_change_24h: Double,
+    @SerializedName("price_change_percentage_1h_in_currency")
+    val price_change_percentage_1h_in_currency: Double,
+    @SerializedName("price_change_percentage_24h_in_currency")
+    val price_change_percentage_24h_in_currency: Double,
+    val fiat_symbol: String
 
 )

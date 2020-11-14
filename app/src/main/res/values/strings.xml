@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">Crypto Station</string>
+    <string-array name="array_currency_name">
+        <item>USD</item>
+        <item>EUR</item>
+        <item>GBP</item>
+    </string-array>
+    <string-array name="array_currency_symbol">
+        <item>$</item>
+        <item>€</item>
+        <item>£</item>
+    </string-array>
+
+    <string name="coins"> Coins </string>
+    <string name="news"> News </string>
+
+    // shared preferences attributes
+    <string name="preference_value"> com.example.cryptostation_preference_value</string>
+    <string name="preference_status"> com.example.cryptostation_preference_status</string>
 </resources>
