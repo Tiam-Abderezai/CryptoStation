@@ -14,11 +14,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cryptostation.R
 import com.example.cryptostation.adapters.CoinAdapter
+import com.example.cryptostation.databinding.FragmentCoinBinding
 import com.example.cryptostation.models.Coin
 import com.example.cryptostation.utils.data.Constants
 import com.example.cryptostation.utils.data.SharedPref
 import com.example.cryptostation.utils.network.API
-import kotlinx.android.synthetic.main.fragment_market.*
 import kotlinx.coroutines.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -28,18 +28,22 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.Runnable
 import java.util.ArrayList
 
-class MarketFragment : Fragment() {
+class CoinFragment : Fragment() {
     private var mRecyclerView: RecyclerView? = null
     private var mCurrencySpinner: Spinner? = null
     private var mDurationSpinner: Spinner? = null
+
     val mainHandler = Handler(Looper.getMainLooper())
     var mCoinResult = ArrayList<Coin>()
-    var mCoinAdapter = CoinAdapter(mCoinResult)
+    var mCoinAdapter = CoinAdapter(context, mCoinResult)
     var mDuration: String = ""
     var mFiatName: String = ""
     var mFiatSymbol: String = ""
     private lateinit var mPref: SharedPref
-   private lateinit var coins: Coin
+    private lateinit var coins: Coin
+    private lateinit var binding: FragmentCoinBinding
+
+//    val mViewModel = ViewModelProviders.of(this)[CoinViewModel::class.java]
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,17 +51,19 @@ class MarketFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         callCoins()
-        println("CALL COINS")
-        val view = inflater.inflate(R.layout.fragment_market, container, false)
+
+
+        val view = inflater.inflate(R.layout.fragment_coin, container, false)
         // Display list of coins using RecyclerView
-        mRecyclerView = view.findViewById(R.id.frag_market_reclay)
-        mCurrencySpinner = view.findViewById(R.id.frag_market_spin_currency)
-        mDurationSpinner = view.findViewById(R.id.frag_market_spin_duration)
-
-
+        mRecyclerView = view.findViewById(R.id.frag_coin_reclay)
+        mCurrencySpinner = view.findViewById(R.id.frag_coin_spin_currency)
+        mDurationSpinner = view.findViewById(R.id.frag_coin_spin_duration)
         val layoutManager = LinearLayoutManager(activity?.applicationContext)
         mRecyclerView?.layoutManager = layoutManager
         mRecyclerView?.adapter = mCoinAdapter
+        // Saves scroll position upon orientation screen changed
+        // https://stackoverflow.com/questions/52587745/how-to-save-and-restore-scrolling-position-of-the-recyclerview-in-a-fragment-whe
+        mCoinAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         // Set itemAnimator to null so icon doesn't blink when updated
         mRecyclerView?.itemAnimator = null
         // When swipe down, refresh page (callCoins() again)
@@ -142,8 +148,6 @@ class MarketFragment : Fragment() {
         }
 
 
-
-
         // Select duration spinner
         mDurationSpinner!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener,
             AdapterView.OnItemClickListener {
@@ -177,9 +181,27 @@ class MarketFragment : Fragment() {
 
     }
 
+
     // Api call to get crypto coin data
     private fun callCoins() {
-        println("CALL COINS")
+        //Code above causes the below error and below that is the stackoverflow info on it:
+        //java.lang.IllegalStateException: Can't access ViewModels from detached fragment
+        //https://stackoverflow.com/questions/50246796/caused-by-java-lang-illegalstateexception-cant-create-viewmodelprovider-for-de
+
+
+
+//        val coinMutableList = mutableListOf<Coin>()
+//        var coinAdapter = CoinAdapter(context, coinMutableList)
+//
+//        mViewModel.getCoins().observe(viewLifecycleOwner, Observer { coinsSnapshot ->
+//            // Update UI upon Lifecycle
+//            println("SNAPSHOT: "+coinsSnapshot[0])
+//            coinMutableList.clear()
+//            coinMutableList.addAll(coinsSnapshot)
+//            coinAdapter.notifyDataSetChanged()
+//        })
+
+
         val okHttpClient: OkHttpClient by lazy {
             val builder = OkHttpClient.Builder()
             val loggingInterceptor = HttpLoggingInterceptor()
@@ -232,7 +254,7 @@ class MarketFragment : Fragment() {
                         // When successful, stop showing refresh
                         mCoinAdapter.notifyItemRangeChanged(0, mCoinAdapter.itemCount)
 
-                        frag_market_reflay.isRefreshing = false
+//                        frag_market_reflay.isRefreshing = false
                     }
                 }
             } else {

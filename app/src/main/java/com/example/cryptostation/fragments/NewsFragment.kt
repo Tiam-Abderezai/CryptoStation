@@ -17,7 +17,6 @@ import com.example.cryptostation.models.Coin
 //import com.example.cryptostation.models.News
 import com.example.cryptostation.utils.data.Constants
 import com.example.cryptostation.utils.network.API
-import kotlinx.android.synthetic.main.fragment_market.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -48,6 +47,9 @@ class NewsFragment : Fragment() {
         val layoutManager = LinearLayoutManager(activity?.applicationContext)
         mRecyclerView?.layoutManager = layoutManager
         mRecyclerView?.adapter = mNewsAdapter
+        // Saves scroll position upon orientation screen changed
+        // https://stackoverflow.com/questions/52587745/how-to-save-and-restore-scrolling-position-of-the-recyclerview-in-a-fragment-whe
+        mNewsAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         // Set itemAnimator to null so icon doesn't blink when updated
         mRecyclerView?.itemAnimator = null
 
@@ -75,7 +77,7 @@ class NewsFragment : Fragment() {
         val currenciesList: List<String>
 
         GlobalScope.launch(Dispatchers.IO) {
-            val response = api.getCryptoNews("BTC", "title", "important", true).awaitResponse()
+            val response = api.getCryptoNews("BTC", "title", "hot", true).awaitResponse()
             if (response.isSuccessful) {
                 val data = response.body()!!
                 withContext(Dispatchers.Main) {

@@ -1,68 +1,34 @@
 package com.example.cryptostation.activities
 
 import android.os.Bundle
-import android.widget.TableLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.viewpager.widget.ViewPager
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.widget.ViewPager2
 import com.example.cryptostation.R
 import com.example.cryptostation.adapters.MainViewPagerAdapter
-import com.example.cryptostation.fragments.MarketFragment
-import com.example.cryptostation.fragments.NewsFragment
+import com.example.cryptostation.databinding.ActivityMainBinding
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var mViewPager: ViewPager
-    private var mPageTitle = intArrayOf(1,2)
+    private lateinit var mViewPager: ViewPager2
+    private var mPageTitle = intArrayOf(1, 2)
     private lateinit var mTabLayout: TabLayout
-
-
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-//        mPageTitle = (1,2)//
-        mViewPager = findViewById(R.id.homepage_vp)
-        mTabLayout = findViewById(R.id.homepage_tl)
+        // ViewPager2
+        mViewPager = binding.activityMainVp
+        mTabLayout = binding.activityMainTl
 
+        mViewPager.adapter = MainViewPagerAdapter(this)
+        TabLayoutMediator(mTabLayout, mViewPager) { tab, position ->
+            tab.text = "OBJECT ${position + 1}"
+        }.attach()
 
-
-        mViewPager.adapter = MainViewPagerAdapter(supportFragmentManager)
-        mTabLayout.setupWithViewPager(mViewPager)
-
-//        for (i:Int in 1..2){
-//            mTabLayout.addTab(mTabLayout.newTab())
-//        }
-//
-//        mTabLayout.tabGravity
-//
-//        val pageAdapter = MainViewPagerAdapter(supportFragmentManager)
-//        mViewPager.adapter = pageAdapter
-//        mViewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(mTabLayout))
-//
-//        mViewPager.offscreenPageLimit = 2
-//        mTabLayout.addOnTabSelectedListener(object :
-//            TabLayout.OnTabSelectedListener {
-//            override fun onTabSelected(tab: TabLayout.Tab) {
-//                mViewPager.currentItem = tab.position
-//                when (tab.position) {
-//                    1 ->
-//                        mViewPager
-//                    2 ->
-//                        mViewPager
-//                }
-//
-//            }
-//
-//            override fun onTabUnselected(tab: TabLayout.Tab) {
-//
-//            }
-//
-//            override fun onTabReselected(tab: TabLayout.Tab) {
-//
-//            }
-//
-//        })
     }
 }

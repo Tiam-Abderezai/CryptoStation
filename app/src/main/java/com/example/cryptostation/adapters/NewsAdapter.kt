@@ -110,7 +110,6 @@ class NewsAdapter(private var items: ArrayList<Results>) :
         val bundle = Bundle()
         bundle.putBoolean("new_window", true)
         intent.putExtras(bundle)
-        val context: Context
         holder.itemView.setOnClickListener {
             startActivity(holder.itemView.context, intent, bundle)
         }

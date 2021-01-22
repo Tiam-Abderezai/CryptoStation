@@ -5,14 +5,14 @@
     android:orientation="vertical">
 
     <Spinner
-        android:id="@+id/frag_market_spin_currency"
+        android:id="@+id/frag_coin_spin_currency"
         android:layout_marginStart="180dp"
         android:layout_width="100dp"
         android:layout_height="80dp"
         />
 
     <Spinner
-        android:id="@+id/frag_market_spin_duration"
+        android:id="@+id/frag_coin_spin_duration"
         android:layout_marginStart="305dp"
         android:layout_width="100dp"
         android:layout_height="80dp"
@@ -20,13 +20,13 @@
 
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/frag_market_reflay"
+        android:id="@+id/frag_coin_reflay"
         android:layout_marginTop="50dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/frag_market_reclay"
+            android:id="@+id/frag_coin_reclay"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layoutAnimation="@anim/anim_recyclerview"
