@@ -217,7 +217,7 @@ class CoinFragment : Fragment() {
             .create(API::class.java)
 
         GlobalScope.launch(Dispatchers.IO) {
-            val response = api.getCryptoData(mFiatName, mDuration).awaitResponse()
+            val response = api.getAllCryptoData(mFiatName, mDuration).awaitResponse()
             if (response.isSuccessful) {
                 val data = response.body()!!
                 withContext(Dispatchers.Main) {
@@ -244,9 +244,9 @@ class CoinFragment : Fragment() {
                         // Add collected coin attributes to result array
                         mCoinResult.add(coins)
 
-                        if (coins.symbol.equals("eth")) {
-                            println(coins.symbol + " price: " + coins.currentPrice)
-                        }
+//                        if (coins.symbol.equals("eth")) {
+//                            println(coins.symbol + " price: " + coins.currentPrice)
+//                        }
 //                        if (coins.symbol.equals("xrp")) {
 //                            println(coins.symbol + " price: " + coins.currentPrice)
 //                        }

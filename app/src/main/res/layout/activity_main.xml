@@ -27,7 +27,6 @@
                 android:layout_weight="1"
                 android:fontFamily="sans-serif-condensed"
                 android:minHeight="?attr/actionBarSize"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                 app:tabMode="auto" />
         </LinearLayout>
     </androidx.drawerlayout.widget.DrawerLayout>

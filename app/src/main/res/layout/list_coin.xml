@@ -8,7 +8,7 @@
             android:id="@+id/list_coin_image"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:layout_margin="10dp" />
+            android:layout_margin="22dp" />
         <TextView
             android:id="@+id/list_coin_symbol"
             android:layout_marginStart="128dp"

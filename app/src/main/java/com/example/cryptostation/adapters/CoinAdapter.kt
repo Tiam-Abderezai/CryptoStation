@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cryptostation.DetailActivity
+//import com.example.cryptostation.DetailActivity
 //import com.example.cryptostation.MainActivity
 import com.example.cryptostation.R
 import com.example.cryptostation.models.Coin
@@ -72,6 +73,7 @@ class CoinAdapter(private val context: Context?, private var items: List<Coin>) 
         // When crypto coin item is clicked, opens Detail page for the coin
         // Sends coin data to it like symbol and image
         val intentArray = ArrayList<String>()
+        intentArray.add(coins.id)
         intentArray.add(coins.symbol.toUpperCase())
         intentArray.add(coins.imageUrl)
         val intent = Intent(holder.itemView.context, DetailActivity::class.java)
@@ -83,3 +85,4 @@ class CoinAdapter(private val context: Context?, private var items: List<Coin>) 
     }
 
 }
+
