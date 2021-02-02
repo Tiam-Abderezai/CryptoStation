@@ -1,9 +1,7 @@
-package com.example.cryptostation.utils.network
+package com.example.cryptostation.data
 
-import News
 import com.example.cryptostation.models.Coin
 //import com.example.cryptostation.models.News
-import com.example.cryptostation.utils.data.Constants
 import com.google.gson.JsonObject
 //import com.example.cryptostation.model.CoinItem
 import retrofit2.Call
@@ -34,5 +32,5 @@ interface API {
         @Query("title") title: String,
         @Query("filter") filter: String,
         @Query("public") public: Boolean
-    ): Call<News>
+    ): Call<JsonObject>
 }

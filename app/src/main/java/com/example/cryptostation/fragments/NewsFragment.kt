@@ -1,8 +1,9 @@
 package com.example.cryptostation.fragments
 
-import News
-import Results
-import Source
+
+//import com.example.cryptostation.models.News
+//import Results
+//import Source
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,12 +12,10 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cryptostation.R
-import com.example.cryptostation.adapters.CoinAdapter
 import com.example.cryptostation.adapters.NewsAdapter
-import com.example.cryptostation.models.Coin
-//import com.example.cryptostation.models.News
-import com.example.cryptostation.utils.data.Constants
-import com.example.cryptostation.utils.network.API
+
+import com.example.cryptostation.models.News
+import com.example.cryptostation.data.API
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -29,10 +28,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.ArrayList
 
 class NewsFragment : Fragment() {
-    private var mRecyclerView: RecyclerView? = null
-    var mNewsResult = ArrayList<Results>()
-    var mNewsSource = ArrayList<Source>()
-    var mNewsAdapter = NewsAdapter(mNewsResult)
+
+    private  var mRecyclerView: RecyclerView? = null
+    private var mNewsResult = ArrayList<News>()
+    private var mNewsAdapter = NewsAdapter(mNewsResult)
+//    var mNewsSource = ArrayList<Source>()
 
 
     override fun onCreateView(
@@ -43,6 +43,9 @@ class NewsFragment : Fragment() {
         callNews()
         val view = inflater.inflate(R.layout.fragment_news, container, false)
         // Display list of coins using RecyclerView
+
+
+
         mRecyclerView = view.findViewById(R.id.frag_news_reclay)
         val layoutManager = LinearLayoutManager(activity?.applicationContext)
         mRecyclerView?.layoutManager = layoutManager
@@ -81,28 +84,33 @@ class NewsFragment : Fragment() {
             if (response.isSuccessful) {
                 val data = response.body()!!
                 withContext(Dispatchers.Main) {
-                    println("NEWS SIZE " + data.results?.get(0))
-                    println("NEWS SIZE " + data.results?.get(1))
+                    println("NEWS RESULTS ARE: " + data.get("results").asJsonArray.size())
+//                    println("NEWS SIZE " + data.results?.get(1))
 //                    println("NEWS IS " + data?.get(1).filter)
 //                    println("NEWS IS " + data?.get(2).public)
 //                    if (!mCoinResult.isEmpty()) {
 //                        mCoinResult.clear()
 //                    }
 
-
-                    var news: Results
-
+                    var news: News
+                    var newsMutableMap = mutableMapOf<String, String>()
                     // Loop through the retrieved coin list
                     // and store their attributes
-                    for (i: Int in 1..data.results?.size!! - 1) {
-                        news = Results(
-                            data.results?.get(i)!!.title,
-                            data.results?.get(i)!!.url,
-                            data.results?.get(i)!!.source
+                    for (i: Int in 1..data.get("results").asJsonArray.size() - 1) {
+
+                        news = News(
+                            data?.get("results").asJsonArray.get(i).asJsonObject.get("title").toString(),
+                            data?.get("results").asJsonArray.get(i).asJsonObject.get("url").toString().replace("\"","")
+//                            data?.get(i)!!.url,
+//                            data.?.get(i)!!.source
 //                            data?.get(i)!!.public
                         )
-
-                                                println(data.results?.get(i)!!.source)
+                        println(
+                            "SOURCES ARE: " + data?.get("results").asJsonArray.get(i).asJsonObject.get(
+                                "url"
+                            )
+                        )
+//                                                println(data.results?.get(i)!!.source)
                         // Add collected news attributes to result array
                         mNewsResult.add(news)
 

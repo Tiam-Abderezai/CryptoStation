@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Crypto Station</string>
+    <string name="app_name"></string>
     <string-array name="array_currency_name">
         <item>USD</item>
         <item>EUR</item>

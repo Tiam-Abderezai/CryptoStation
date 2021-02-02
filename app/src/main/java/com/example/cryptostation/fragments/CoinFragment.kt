@@ -10,15 +10,18 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cryptostation.R
 import com.example.cryptostation.adapters.CoinAdapter
 import com.example.cryptostation.databinding.FragmentCoinBinding
 import com.example.cryptostation.models.Coin
-import com.example.cryptostation.utils.data.Constants
-import com.example.cryptostation.utils.data.SharedPref
-import com.example.cryptostation.utils.network.API
+import com.example.cryptostation.data.Constants
+import com.example.cryptostation.data.SharedPref
+import com.example.cryptostation.data.API
+import com.example.cryptostation.viewmodel.CoinViewModel
 import kotlinx.coroutines.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -29,13 +32,17 @@ import java.lang.Runnable
 import java.util.ArrayList
 
 class CoinFragment : Fragment() {
+    var mCoinResult = ArrayList<Coin>()
+
+        var mCoinAdapter = CoinAdapter(context, mCoinResult)
+    private lateinit var mCoinViewModel: CoinViewModel
+//    private lateinit var mStarAdapter: StarAdapter
+
     private var mRecyclerView: RecyclerView? = null
     private var mCurrencySpinner: Spinner? = null
     private var mDurationSpinner: Spinner? = null
 
     val mainHandler = Handler(Looper.getMainLooper())
-    var mCoinResult = ArrayList<Coin>()
-    var mCoinAdapter = CoinAdapter(context, mCoinResult)
     var mDuration: String = ""
     var mFiatName: String = ""
     var mFiatSymbol: String = ""
@@ -43,15 +50,12 @@ class CoinFragment : Fragment() {
     private lateinit var coins: Coin
     private lateinit var binding: FragmentCoinBinding
 
-//    val mViewModel = ViewModelProviders.of(this)[CoinViewModel::class.java]
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        callCoins()
-
 
         val view = inflater.inflate(R.layout.fragment_coin, container, false)
         // Display list of coins using RecyclerView
@@ -63,9 +67,24 @@ class CoinFragment : Fragment() {
         mRecyclerView?.adapter = mCoinAdapter
         // Saves scroll position upon orientation screen changed
         // https://stackoverflow.com/questions/52587745/how-to-save-and-restore-scrolling-position-of-the-recyclerview-in-a-fragment-whe
-        mCoinAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+        mCoinAdapter.stateRestorationPolicy =
+            RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         // Set itemAnimator to null so icon doesn't blink when updated
         mRecyclerView?.itemAnimator = null
+
+
+        mCoinViewModel = ViewModelProvider(this).get(CoinViewModel::class.java)
+        println(
+            "SHOW ALL " + mCoinViewModel.readAllData.observe(
+                viewLifecycleOwner,
+                Observer { starredCoins ->
+                    mCoinAdapter.setData(starredCoins)
+                })
+        )
+
+
+//        callCoins()
+
         // When swipe down, refresh page (callCoins() again)
 //        frag_market_reflay.setOnRefreshListener {
 //            frag_market_reflay.isRefreshing = true
@@ -73,7 +92,7 @@ class CoinFragment : Fragment() {
         // Run the api call to get and display coin data every second
         mainHandler.post(object : Runnable {
             override fun run() {
-                callCoins()
+//                callCoins()
                 mainHandler.postDelayed(this, 1000)
             }
         })
@@ -189,7 +208,6 @@ class CoinFragment : Fragment() {
         //https://stackoverflow.com/questions/50246796/caused-by-java-lang-illegalstateexception-cant-create-viewmodelprovider-for-de
 
 
-
 //        val coinMutableList = mutableListOf<Coin>()
 //        var coinAdapter = CoinAdapter(context, coinMutableList)
 //
@@ -221,7 +239,6 @@ class CoinFragment : Fragment() {
             if (response.isSuccessful) {
                 val data = response.body()!!
                 withContext(Dispatchers.Main) {
-
                     if (!mCoinResult.isEmpty()) {
                         mCoinResult.clear()
                     }
@@ -230,7 +247,8 @@ class CoinFragment : Fragment() {
                     // and store their attributes
                     for (i: Int in 1..data.size - 1) {
                         coins = Coin(
-                            data?.get(i)!!.id,
+                            0,
+                            data?.get(i)!!.coinId,
                             data?.get(i)!!.symbol,
                             data?.get(i)!!.name,
                             data?.get(i)!!.imageUrl,
@@ -243,18 +261,9 @@ class CoinFragment : Fragment() {
 
                         // Add collected coin attributes to result array
                         mCoinResult.add(coins)
-
-//                        if (coins.symbol.equals("eth")) {
-//                            println(coins.symbol + " price: " + coins.currentPrice)
-//                        }
-//                        if (coins.symbol.equals("xrp")) {
-//                            println(coins.symbol + " price: " + coins.currentPrice)
-//                        }
-//                        println(result)
                         // When successful, stop showing refresh
-                        mCoinAdapter.notifyItemRangeChanged(0, mCoinAdapter.itemCount)
+//                        mCoinAdapter.notifyItemRangeChanged(0, mCoinAdapter.itemCount)
 
-//                        frag_market_reflay.isRefreshing = false
                     }
                 }
             } else {

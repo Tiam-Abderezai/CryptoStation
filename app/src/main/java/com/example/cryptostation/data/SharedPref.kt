@@ -1,4 +1,4 @@
-package com.example.cryptostation.utils.data
+package com.example.cryptostation.data
 
 import android.content.Context
 import android.content.SharedPreferences

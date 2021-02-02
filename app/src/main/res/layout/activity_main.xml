@@ -14,20 +14,34 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/activity_main_tl_top"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:fontFamily="sans-serif-condensed"
+                android:minHeight="?attr/actionBarSize"
+                app:tabMode="auto"
+                />
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/activity_main_vp"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="8" />
 
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/activity_main_tl"
+            <ImageView
+                android:id="@+id/activity_main_btn_add_new"
+                android:layout_below="@+id/activity_main_vp"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:fontFamily="sans-serif-condensed"
-                android:minHeight="?attr/actionBarSize"
-                app:tabMode="auto" />
+                android:layout_height="64dp"
+                android:src="@drawable/ic_add"
+                android:background="@color/colorPrimary"
+                />
+
         </LinearLayout>
+
+
     </androidx.drawerlayout.widget.DrawerLayout>
+
+
 </RelativeLayout>

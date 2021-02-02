@@ -1,4 +1,4 @@
-package com.example.cryptostation.utils.data
+package com.example.cryptostation.data
 
 class Constants {
 

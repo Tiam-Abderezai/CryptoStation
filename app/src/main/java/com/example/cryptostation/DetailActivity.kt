@@ -4,11 +4,14 @@ import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import com.example.cryptostation.adapters.ChartAdapter
 import com.example.cryptostation.adapters.CoinAdapter
 import com.example.cryptostation.models.Coin
-import com.example.cryptostation.utils.data.Constants
-import com.example.cryptostation.utils.network.API
+import com.example.cryptostation.data.Constants
+import com.example.cryptostation.data.API
+import com.example.cryptostation.viewmodel.CoinViewModel
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_detail.*
 import kotlinx.coroutines.Dispatchers
@@ -20,21 +23,20 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.awaitResponse
 import retrofit2.converter.gson.GsonConverterFactory
-import java.text.SimpleDateFormat
-import java.util.*
 import kotlin.collections.ArrayList
 
 class DetailActivity : AppCompatActivity() {
 
     private lateinit var mTV_Symbol: TextView
     private lateinit var mIV_Image: ImageView
-
-    //    private lateinit var coinData: List<Coin>
-    private lateinit var mCoinData: Coin
     private lateinit var mCoinId: String
+    private lateinit var mCoinViewModel: CoinViewModel
 
     var mCoinResult = java.util.ArrayList<Coin>()
     var mCoinAdapter = CoinAdapter(this, mCoinResult)
+
+    private lateinit var mFavoriteBtn: ImageView
+    private var mFavoriteSelected: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,18 +47,24 @@ class DetailActivity : AppCompatActivity() {
         // Initializes the coin id (e.g "bitcoin" or "etherium") used to query coin data
         mCoinId = intentArray?.get(0)
         println("GIMME ID " + mCoinId)
+        mCoinViewModel = ViewModelProvider(this).get(CoinViewModel::class.java)
 
         callCoins(mCoinId)
 
 
 
-        mTV_Symbol = findViewById(R.id.detail_symbol)
-        mIV_Image = findViewById(R.id.detail_image)
+        mTV_Symbol = detail_symbol
+        mIV_Image = detail_image
+        mFavoriteBtn = detail_star
 
 
         mTV_Symbol.setText(intentArray?.get(1))
         Picasso.get().load(intentArray?.get(2)).into(mIV_Image)
 
+
+        mFavoriteBtn.setOnClickListener {
+            clickStar()
+        }
 
     }
 
@@ -106,7 +114,7 @@ class DetailActivity : AppCompatActivity() {
 
                     var chartDate = ArrayList<Long>()
                     var chartPrice = ArrayList<Float>()
-                    var chartDateAndPrice = mutableMapOf<ArrayList<Long>,ArrayList<Float>>()
+                    var chartDateAndPrice = mutableMapOf<ArrayList<Long>, ArrayList<Float>>()
                     var chartArray = ArrayList<MutableMap<ArrayList<Long>, ArrayList<Float>>>()
 
                     for (i: Int in 1..data.get("prices").asJsonArray.size() - 1) {
@@ -122,10 +130,12 @@ class DetailActivity : AppCompatActivity() {
                                         0
                                     ).asLong / 1000L
                                 )
-                                println("DISPLAY PRICE " + data.get("prices").asJsonArray.get(i).asJsonArray.get(
-                                    1
-                                ).asFloat / 100)
-                                chartDateAndPrice = mutableMapOf( chartDate to chartPrice)
+                                println(
+                                    "DISPLAY PRICE " + data.get("prices").asJsonArray.get(i).asJsonArray.get(
+                                        1
+                                    ).asFloat / 100
+                                )
+                                chartDateAndPrice = mutableMapOf(chartDate to chartPrice)
                                 chartArray.add(0, chartDateAndPrice)
                             }
                             49 -> {
@@ -139,7 +149,7 @@ class DetailActivity : AppCompatActivity() {
                                         0
                                     ).asLong / 1000L
                                 )
-                                chartDateAndPrice = mutableMapOf( chartDate to chartPrice)
+                                chartDateAndPrice = mutableMapOf(chartDate to chartPrice)
                                 chartArray.add(0, chartDateAndPrice)
                             }
                             97 -> {
@@ -153,7 +163,7 @@ class DetailActivity : AppCompatActivity() {
                                         0
                                     ).asLong / 1000L
                                 )
-                                chartDateAndPrice = mutableMapOf( chartDate to chartPrice)
+                                chartDateAndPrice = mutableMapOf(chartDate to chartPrice)
                                 chartArray.add(0, chartDateAndPrice)
                             }
                             145 -> {
@@ -167,7 +177,7 @@ class DetailActivity : AppCompatActivity() {
                                         0
                                     ).asLong / 1000L
                                 )
-                                chartDateAndPrice = mutableMapOf( chartDate to chartPrice)
+                                chartDateAndPrice = mutableMapOf(chartDate to chartPrice)
                                 chartArray.add(0, chartDateAndPrice)
                             }
 
@@ -197,5 +207,28 @@ class DetailActivity : AppCompatActivity() {
         }
     }
 
+    private fun clickStar() {
+        //https://stackoverflow.com/questions/29041027/android-getresources-getdrawable-deprecated-api-22
+        val unstarred = ContextCompat.getDrawable(applicationContext, R.drawable.ic_star_empty)
+        val starred = ContextCompat.getDrawable(applicationContext, R.drawable.ic_star_full)
+
+        // Create Star object to save starred coins to SQLite database
+        val id = mCoinId
+        val symbol = mTV_Symbol.text.toString()
+
+//        val star = Star(0, id, symbol)
+        val coin = Coin(0, id, symbol, "", "", 0.0, 0.0, 0.0, 0.0, "")
+        if (!mFavoriteSelected) {
+            mFavoriteSelected = true
+            detail_star.setImageDrawable(starred)
+            // Add data to Database
+            mCoinViewModel.addCoin(coin)
+        } else {
+            mFavoriteSelected = false
+            detail_star.setImageDrawable(unstarred)
+            // Add data to Database
+            mCoinViewModel.deleteCoin(coin)
+        }
+    }
 
 }

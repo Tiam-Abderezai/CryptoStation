@@ -14,7 +14,7 @@ import com.example.cryptostation.DetailActivity
 //import com.example.cryptostation.MainActivity
 import com.example.cryptostation.R
 import com.example.cryptostation.models.Coin
-import com.example.cryptostation.utils.data.SharedPref
+import com.example.cryptostation.data.SharedPref
 import com.squareup.picasso.Picasso
 
 class CoinAdapter(private val context: Context?, private var items: List<Coin>) :
@@ -36,20 +36,20 @@ class CoinAdapter(private val context: Context?, private var items: List<Coin>) 
         return ViewHolder(itemView)
     }
 
-    class ViewHolder(row: View) : RecyclerView.ViewHolder(row) {
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var imgImage: ImageView? = null
         var txtSymbol: TextView? = null
         var txtPrice: TextView? = null
 
         init {
-            this.imgImage = row?.findViewById(R.id.list_coin_image)
-            this.txtSymbol = row?.findViewById(R.id.list_coin_symbol)
-            this.txtPrice = row?.findViewById(R.id.list_coin_price)
+            this.imgImage = view?.findViewById(R.id.list_coin_image)
+            this.txtSymbol = view?.findViewById(R.id.list_coin_symbol)
+            this.txtPrice = view?.findViewById(R.id.list_coin_price)
         }
     }
 
 
-    private val coins = mutableListOf<Coin>()
+    private var coins = mutableListOf<Coin>()
 
     init {
         coins.addAll(items)
@@ -73,7 +73,7 @@ class CoinAdapter(private val context: Context?, private var items: List<Coin>) 
         // When crypto coin item is clicked, opens Detail page for the coin
         // Sends coin data to it like symbol and image
         val intentArray = ArrayList<String>()
-        intentArray.add(coins.id)
+        intentArray.add(coins.coinId)
         intentArray.add(coins.symbol.toUpperCase())
         intentArray.add(coins.imageUrl)
         val intent = Intent(holder.itemView.context, DetailActivity::class.java)
@@ -82,6 +82,13 @@ class CoinAdapter(private val context: Context?, private var items: List<Coin>) 
             holder.itemView.context.startActivity(intent)
         }
 
+    }
+
+    // Used by CoinViewModel in CoinFragment to display all
+    // starred coins from the database
+        fun setData(coin: List<Coin>) {
+        this.coins = coin as MutableList<Coin>
+        notifyDataSetChanged()
     }
 
 }
