@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cryptostation.R
 import com.example.cryptostation.adapters.CoinAdapter
+import com.example.cryptostation.adapters.StarredCoinAdapter
 import com.example.cryptostation.databinding.FragmentCoinBinding
 import com.example.cryptostation.models.Coin
 import com.example.cryptostation.data.Constants
@@ -34,7 +35,8 @@ import java.util.ArrayList
 class CoinFragment : Fragment() {
     var mCoinResult = ArrayList<Coin>()
 
-        var mCoinAdapter = CoinAdapter(context, mCoinResult)
+    var mCoinAdapter = CoinAdapter(context, mCoinResult)
+    var mStarredCoinAdapter = StarredCoinAdapter(context, mCoinResult)
     private lateinit var mCoinViewModel: CoinViewModel
 //    private lateinit var mStarAdapter: StarAdapter
 
@@ -73,17 +75,18 @@ class CoinFragment : Fragment() {
         mRecyclerView?.itemAnimator = null
 
 
-        mCoinViewModel = ViewModelProvider(this).get(CoinViewModel::class.java)
-        println(
-            "SHOW ALL " + mCoinViewModel.readAllData.observe(
-                viewLifecycleOwner,
-                Observer { starredCoins ->
-                    mCoinAdapter.setData(starredCoins)
-                })
-        )
+//        mCoinViewModel = ViewModelProvider(this).get(CoinViewModel::class.java)
+//        val coinSize = mCoinViewModel.readAllData.value?.size
+//        println("COIN SIZE $coinSize")
+//
+//        mCoinViewModel.readAllData.observe(
+//            viewLifecycleOwner,
+//            Observer { starredCoins ->
+//                mCoinAdapter.setData(starredCoins)
+//            })
+//
 
-
-//        callCoins()
+        callCoins()
 
         // When swipe down, refresh page (callCoins() again)
 //        frag_market_reflay.setOnRefreshListener {
@@ -92,7 +95,7 @@ class CoinFragment : Fragment() {
         // Run the api call to get and display coin data every second
         mainHandler.post(object : Runnable {
             override fun run() {
-//                callCoins()
+                callCoins()
                 mainHandler.postDelayed(this, 1000)
             }
         })
@@ -208,17 +211,12 @@ class CoinFragment : Fragment() {
         //https://stackoverflow.com/questions/50246796/caused-by-java-lang-illegalstateexception-cant-create-viewmodelprovider-for-de
 
 
-//        val coinMutableList = mutableListOf<Coin>()
-//        var coinAdapter = CoinAdapter(context, coinMutableList)
-//
-//        mViewModel.getCoins().observe(viewLifecycleOwner, Observer { coinsSnapshot ->
-//            // Update UI upon Lifecycle
-//            println("SNAPSHOT: "+coinsSnapshot[0])
-//            coinMutableList.clear()
-//            coinMutableList.addAll(coinsSnapshot)
-//            coinAdapter.notifyDataSetChanged()
-//        })
-
+        mCoinViewModel = ViewModelProvider(this).get(CoinViewModel::class.java)
+        mCoinViewModel.readAllData.observe(
+            viewLifecycleOwner,
+            Observer { starredCoins ->
+                mStarredCoinAdapter.setData(starredCoins)
+            })
 
         val okHttpClient: OkHttpClient by lazy {
             val builder = OkHttpClient.Builder()
@@ -245,7 +243,10 @@ class CoinFragment : Fragment() {
                     var coins: Coin
                     // Loop through the retrieved coin list
                     // and store their attributes
-                    for (i: Int in 1..data.size - 1) {
+
+                    val coinSize = mCoinViewModel.readAllData.value?.size
+
+                    for (i: Int in 0..data.size - 1) {
                         coins = Coin(
                             0,
                             data?.get(i)!!.coinId,
@@ -258,19 +259,45 @@ class CoinFragment : Fragment() {
                             data?.get(i)!!.price_change_percentage_24h_in_currency,
                             mFiatSymbol
                         )
+                        // If the coinSize (Size of favorite starred coins)
+                        // is empty or null, ignores looping through it to prevent crash
+                        coinSize?.let {
+                            for (c: Int in 0..coinSize!! - 1) {
+                                if (coins.symbol.toLowerCase()
+                                        .equals(mCoinViewModel.readAllData.value!!.get(c).symbol.toLowerCase())
+                                ) {
+                                    coins = Coin(
+                                        0,
+                                        data?.get(i)!!.coinId,
+                                        data?.get(i)!!.symbol,
+                                        data?.get(i)!!.name,
+                                        data?.get(i)!!.imageUrl,
+                                        data?.get(i)!!.currentPrice,
+                                        data?.get(i)!!.price_change_24h,
+                                        data?.get(i)!!.price_change_percentage_1h_in_currency,
+                                        data?.get(i)!!.price_change_percentage_24h_in_currency,
+                                        mFiatSymbol
+                                    )
+                                    // Add collected coin attributes to result array
+                                    mCoinResult.add(coins)
+                                    // When successful, stop showing refresh
+                                    mCoinAdapter.notifyItemRangeChanged(0, mCoinAdapter.itemCount)
+                                }
 
-                        // Add collected coin attributes to result array
-                        mCoinResult.add(coins)
-                        // When successful, stop showing refresh
-//                        mCoinAdapter.notifyItemRangeChanged(0, mCoinAdapter.itemCount)
+                            }
+                        }
+
 
                     }
+
+
                 }
             } else {
                 println("FAILED")
             }
         }
     }
+
 
 
 }

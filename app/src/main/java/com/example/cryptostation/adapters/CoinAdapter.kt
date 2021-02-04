@@ -86,10 +86,9 @@ class CoinAdapter(private val context: Context?, private var items: List<Coin>) 
 
     // Used by CoinViewModel in CoinFragment to display all
     // starred coins from the database
-        fun setData(coin: List<Coin>) {
+    fun setData(coin: List<Coin>) {
         this.coins = coin as MutableList<Coin>
         notifyDataSetChanged()
     }
 
 }
-
