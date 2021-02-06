@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:id="@+id/list_setting">
+
+    <ImageView
+        android:id="@+id/list_setting_icon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_margin="22dp"/>
+    <TextView
+        android:id="@+id/list_setting_name"
+        android:layout_marginStart="128dp"
+        android:layout_marginLeft="128dp"
+        android:layout_marginTop="32dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Name"
+        android:textStyle="bold" />
+    <TextView
+        android:id="@+id/list_setting_action"
+        android:layout_marginStart="256dp"
+        android:layout_marginLeft="256dp"
+        android:layout_marginTop="32dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="comment"
+        android:textStyle="bold"
+        />
+
+</RelativeLayout>
