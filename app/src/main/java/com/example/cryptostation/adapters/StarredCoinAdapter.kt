@@ -80,14 +80,7 @@ class StarredCoinAdapter(private val context: Context?, private var coinList: Li
         holder.itemView.setOnClickListener {
             holder.itemView.context.startActivity(intent)
         }
-        //        val currentItem = coinList[position]
-//        holder.itemView.list_coin_symbol.text = currentItem.symbol
-//        holder.itemView.list_coin_price.text = currentItem.currentPrice.toString()
-//        println("CURRENT ITEM: ${currentItem.currentPrice}")
-////        holder.itemView.list_coin.setOnClickListener {
-////            val action = ListFragmentDirections.actionListFragmentToUpdateFragment(currentItem)
-////            holder.itemView.findNavController().navigate(action)
-////        }
+
     }
 
     fun setData(coin: List<Coin>) {

@@ -3,11 +3,15 @@ package com.example.cryptostation
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.example.cryptostation.adapters.ChartAdapter
 import com.example.cryptostation.adapters.CoinAdapter
+import com.example.cryptostation.adapters.StarredCoinAdapter
 import com.example.cryptostation.models.Coin
 import com.example.cryptostation.data.Constants
 import com.example.cryptostation.data.API
@@ -34,37 +38,22 @@ class DetailActivity : AppCompatActivity() {
 
     var mCoinResult = java.util.ArrayList<Coin>()
     var mCoinAdapter = CoinAdapter(this, mCoinResult)
-
+    var mStarredCoinAdapter = StarredCoinAdapter(this, mCoinResult)
     private lateinit var mFavoriteBtn: ImageView
     private var mFavoriteSelected: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
-
         // Receives the Coin values passed from CoinAdapter
         val intentArray = intent.getSerializableExtra("key_symbol") as ArrayList<String>
         // Initializes the coin id (e.g "bitcoin" or "etherium") used to query coin data
         mCoinId = intentArray?.get(0)
-        println("GIMME ID " + mCoinId)
-        mCoinViewModel = ViewModelProvider(this).get(CoinViewModel::class.java)
+
 
         callCoins(mCoinId)
 
 
-
-        mTV_Symbol = detail_symbol
-        mIV_Image = detail_image
-        mFavoriteBtn = detail_star
-
-
-        mTV_Symbol.setText(intentArray?.get(1))
-        Picasso.get().load(intentArray?.get(2)).into(mIV_Image)
-
-
-        mFavoriteBtn.setOnClickListener {
-            clickStar()
-        }
 
     }
 
@@ -79,7 +68,16 @@ class DetailActivity : AppCompatActivity() {
             builder.addInterceptor(loggingInterceptor)
             builder.build()
         }
+        this.let {
+            mCoinViewModel = ViewModelProvider(this).get(CoinViewModel::class.java)
 
+//        mCoinViewModel = ViewModelProviders.of(this).get(CoinViewModel::class.java)
+            mCoinViewModel.readAllData.observe(
+                this,
+                Observer { starredCoins ->
+                    mStarredCoinAdapter.setData(starredCoins)
+                })
+        }
 
         val api = Retrofit.Builder()
             .baseUrl(Constants.URL_NEWS)
@@ -185,14 +183,43 @@ class DetailActivity : AppCompatActivity() {
 
 
                     }
-//
-//                    for (i in 0..chartArray.get(1).size - 1) {
-//                        println("PPPRICE" + chartArray.get(1).get(i))
-//                    }
-//
-//                    for (i in 0..chartArray.get(1).size - 1) {
-//                        println("DDDate" + chartArray.get(0).get(i))
-//                    }
+
+                    // Receives the Coin values passed from CoinAdapter
+                    val intentArray = intent.getSerializableExtra("key_symbol") as ArrayList<String>
+                    // Initializes the coin id (e.g "bitcoin" or "etherium") used to query coin data
+                    mCoinId = intentArray?.get(0)
+
+
+                    mTV_Symbol = detail_symbol
+                    mIV_Image = detail_image
+                    mFavoriteBtn = detail_star
+
+
+                    mTV_Symbol.setText(intentArray?.get(1))
+                    Picasso.get().load(intentArray?.get(2)).into(mIV_Image)
+
+
+                    mFavoriteBtn.setOnClickListener {
+                        clickStar()
+                    }
+
+                    val coinSize = mCoinViewModel.readAllData.value?.size
+                    println("VALUE IS " + mCoinViewModel.readAllData.value)
+                    coinSize?.let {
+                        println("SOUT SIZE" + coinSize)
+                        for (i: Int in 0..coinSize!! - 1) {
+                            // if coin is starred, it stars the coin
+                            if (mCoinId.equals(mCoinViewModel.readAllData.value!!.get(i).coinId.toLowerCase())
+                            ) {
+                                val starred = ContextCompat.getDrawable(
+                                    applicationContext,
+                                    R.drawable.ic_star_full
+                                )
+                                detail_star.setImageDrawable(starred)
+                                println("GIMME ID " + mCoinId)
+                            }
+                        }
+                    }
                     val adapter = ChartAdapter(chartArray)
                     detail_chart.adapter = adapter
                     adapter.notifyDataSetChanged()

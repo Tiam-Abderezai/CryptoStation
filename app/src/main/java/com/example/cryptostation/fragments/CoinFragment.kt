@@ -1,5 +1,6 @@
 package com.example.cryptostation.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -38,7 +39,6 @@ class CoinFragment : Fragment() {
     var mCoinAdapter = CoinAdapter(context, mCoinResult)
     var mStarredCoinAdapter = StarredCoinAdapter(context, mCoinResult)
     private lateinit var mCoinViewModel: CoinViewModel
-//    private lateinit var mStarAdapter: StarAdapter
 
     private var mRecyclerView: RecyclerView? = null
     private var mCurrencySpinner: Spinner? = null
@@ -210,13 +210,15 @@ class CoinFragment : Fragment() {
         //java.lang.IllegalStateException: Can't access ViewModels from detached fragment
         //https://stackoverflow.com/questions/50246796/caused-by-java-lang-illegalstateexception-cant-create-viewmodelprovider-for-de
 
+        activity?.let {
+            mCoinViewModel = ViewModelProvider(this).get(CoinViewModel::class.java)
+            mCoinViewModel.readAllData.observe(
+                viewLifecycleOwner,
+                Observer { starredCoins ->
+                    mStarredCoinAdapter.setData(starredCoins)
+                })
 
-        mCoinViewModel = ViewModelProvider(this).get(CoinViewModel::class.java)
-        mCoinViewModel.readAllData.observe(
-            viewLifecycleOwner,
-            Observer { starredCoins ->
-                mStarredCoinAdapter.setData(starredCoins)
-            })
+        }
 
         val okHttpClient: OkHttpClient by lazy {
             val builder = OkHttpClient.Builder()
@@ -297,7 +299,5 @@ class CoinFragment : Fragment() {
             }
         }
     }
-
-
 
 }

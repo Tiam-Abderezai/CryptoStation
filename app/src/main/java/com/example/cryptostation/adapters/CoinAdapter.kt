@@ -58,7 +58,6 @@ class CoinAdapter(private val context: Context?, private var items: List<Coin>) 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var coins = items[position]
 
-
         Picasso.get().load(coins.imageUrl).into(holder?.imgImage)
         holder?.txtSymbol?.text = coins.symbol.toUpperCase()
         holder?.txtPrice?.text = coins.fiat_symbol + " " + coins.currentPrice.toString()
@@ -84,11 +83,5 @@ class CoinAdapter(private val context: Context?, private var items: List<Coin>) 
 
     }
 
-    // Used by CoinViewModel in CoinFragment to display all
-    // starred coins from the database
-    fun setData(coin: List<Coin>) {
-        this.coins = coin as MutableList<Coin>
-        notifyDataSetChanged()
-    }
 
 }

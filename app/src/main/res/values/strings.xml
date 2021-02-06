@@ -17,4 +17,13 @@
     // shared preferences attributes
     <string name="preference_value"> com.example.cryptostation_preference_value</string>
     <string name="preference_status"> com.example.cryptostation_preference_status</string>
+
+    // nav drawer attributes
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
+    <string name="title_activity_settings">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
 </resources>
