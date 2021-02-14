@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name"></string>
+    <string-array name="array_currency_name">
+        <item>USD</item>
+        <item>EUR</item>
+        <item>GBP</item>
+    </string-array>
+    <string-array name="array_currency_symbol">
+        <item>$</item>
+        <item>€</item>
+        <item>£</item>
+    </string-array>
+
+    <string name="coins"> Coins </string>
+    <string name="news"> News </string>
+
+    // shared preferences attributes
+    <string name="preference_value"> com.example.cryptostation_preference_value</string>
+    <string name="preference_status"> com.example.cryptostation_preference_status</string>
+
+    // nav drawer attributes
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
+    <string name="title_activity_settings">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <string name="settings">Configurações</string>
+    <string name="nightmode">Modo noturno</string>
+    <string name="security">Segurança</string>
+    <string name="language">Idioma</string>
+    <string name="notifications">Notificações</string>
+</resources>
