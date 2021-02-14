@@ -1,48 +1,60 @@
 package com.example.cryptostation
 
+import android.content.Context
+import android.content.ContextWrapper
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.cryptostation.adapters.SettingsAdapter
-import com.example.cryptostation.models.Setting
-import com.example.cryptostation.viewmodel.CoinViewModel
-import kotlinx.android.synthetic.main.activity_detail.*
-import kotlinx.android.synthetic.main.activity_settings.*
-import java.util.ArrayList
+import com.example.cryptostation.data.SharedPref
+import com.example.cryptostation.fragments.Callback
+import com.example.cryptostation.fragments.settings.*
 
-class SettingsActivity : AppCompatActivity() {
-    var mSettingsResult = ArrayList<Setting>()
-    var mSettingsList = ArrayList<Setting>()
 
-    var mSettingsAdapter = SettingsAdapter(this, mSettingsResult)
-    private var mRecyclerView: RecyclerView? = null
+class SettingsActivity : AppCompatActivity(), Callback {
+    val settingsFragment = SettingsFragment()
+    val nightmodeFragment = NightmodeFragment()
+    val securityFragment = SecurityFragment()
+    val languageFragment = LanguageFragment()
+    val notificationsFragment = NotificationsFragment()
+//    lateinit var mSharedPref: SharedPref
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
-        mRecyclerView = settings_rv
-        val layoutManager = LinearLayoutManager(applicationContext)
-        mRecyclerView?.layoutManager = layoutManager
-        mRecyclerView?.adapter = mSettingsAdapter
-        mSettingsAdapter.stateRestorationPolicy =
-            RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-        mRecyclerView?.itemAnimator = null
-        val nightModeRes = ContextCompat.getDrawable(applicationContext, R.drawable.ic_star_empty)
 
-//        detail_star.setImageDrawable(starred)
-        var nightMode = Setting(0,R.drawable.ic_settings_nightmode , "night-mode", true)
-        var security = Setting(1, R.drawable.ic_settings_security, "security", false)
-        var language = Setting(2, R.drawable.ic_settings_language, "language", false)
-        var notifications = Setting(3, R.drawable.ic_settings_notifications, "notifications", false)
-        mSettingsList = arrayListOf(nightMode, security, language, notifications)
-        for (i: Int in 0..3) {
-            mSettingsResult.add(mSettingsList[i])
-            mSettingsAdapter.notifyItemRangeChanged(0, mSettingsAdapter.itemCount)
-
+        supportFragmentManager.beginTransaction().apply {
+            replace(R.id.activity_settings_fl, settingsFragment)
+            commit()
         }
 
 
+        val fragment: String? = intent?.getSerializableExtra("key_frag") as String?
+
+        fragment?.let { openFragment(it) }
+
+
     }
+
+    override fun openFragment(fragment: String) {
+        supportFragmentManager.beginTransaction().apply {
+            when (fragment) {
+                "Night Mode" -> replace(R.id.activity_settings_fl, nightmodeFragment)
+                "Security" -> replace(R.id.activity_settings_fl, securityFragment)
+                "Language" -> replace(R.id.activity_settings_fl, languageFragment)
+                "Notifications" -> replace(
+                    R.id.activity_settings_fl,
+                    notificationsFragment
+                )
+            }
+            commit()
+        }
+    }
+
+
+    // Used for language settings to change system language
+//    override fun attachBaseContext(newBase: Context?) {
+//        val sharedPref = SharedPref(newBase!!)
+//        println("SAVED PREF: " + sharedPref.getLanguage(newBase!!).toString())
+//        val selectedLanguage = sharedPref.getLanguage(newBase!!).toString()
+//        super.attachBaseContext(LanguageContextWrapper.wrap(newBase!!, "Deutsch"))
+//    }
 }

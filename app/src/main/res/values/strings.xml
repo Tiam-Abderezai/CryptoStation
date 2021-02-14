@@ -26,4 +26,13 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
 
+
+    // labels
+    <string name="settings">Settings</string>
+    <string name="nightmode">Night Mode</string>
+    <string name="security">Security</string>
+    <string name="language">Language</string>
+    <string name="notifications">Notifications</string>
+
+
 </resources>

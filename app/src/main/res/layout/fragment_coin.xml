@@ -26,7 +26,7 @@
         android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/frag_coin_reclay"
+            android:id="@+id/frag_coin_rv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layoutAnimation="@anim/anim_recyclerview"

@@ -30,7 +30,7 @@ interface API {
     fun getCryptoNews(
         @Query("currencies") currencies: String,
         @Query("title") title: String,
-        @Query("filter") filter: String,
-        @Query("public") public: Boolean
+        @Query("public") public: Boolean,
+        @Query("regions") regions: String
     ): Call<JsonObject>
 }

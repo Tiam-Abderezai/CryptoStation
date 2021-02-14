@@ -80,7 +80,7 @@ class NewsFragment : Fragment() {
         val currenciesList: List<String>
 
         GlobalScope.launch(Dispatchers.IO) {
-            val response = api.getCryptoNews("BTC", "title", "hot", true).awaitResponse()
+            val response = api.getCryptoNews("BTC", "title",  true,"en").awaitResponse()
             if (response.isSuccessful) {
                 val data = response.body()!!
                 withContext(Dispatchers.Main) {

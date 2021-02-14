@@ -1,4 +1,4 @@
-package com.example.cryptostation.models
+package com.example.cryptostation.models.settings
 
 import android.graphics.drawable.Drawable
 import android.os.Parcelable
@@ -8,10 +8,8 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 
-@Entity(tableName = "settings_table")
+
 data class Setting(
-    @PrimaryKey(autoGenerate = true)
-    val settingId: Int,
     val icon: Int,
     val name: String,
     val action: Boolean

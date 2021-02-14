@@ -61,7 +61,7 @@ class CoinFragment : Fragment() {
 
         val view = inflater.inflate(R.layout.fragment_coin, container, false)
         // Display list of coins using RecyclerView
-        mRecyclerView = view.findViewById(R.id.frag_coin_reclay)
+        mRecyclerView = view.findViewById(R.id.frag_coin_rv)
         mCurrencySpinner = view.findViewById(R.id.frag_coin_spin_currency)
         mDurationSpinner = view.findViewById(R.id.frag_coin_spin_duration)
         val layoutManager = LinearLayoutManager(activity?.applicationContext)
@@ -75,24 +75,9 @@ class CoinFragment : Fragment() {
         mRecyclerView?.itemAnimator = null
 
 
-//        mCoinViewModel = ViewModelProvider(this).get(CoinViewModel::class.java)
-//        val coinSize = mCoinViewModel.readAllData.value?.size
-//        println("COIN SIZE $coinSize")
-//
-//        mCoinViewModel.readAllData.observe(
-//            viewLifecycleOwner,
-//            Observer { starredCoins ->
-//                mCoinAdapter.setData(starredCoins)
-//            })
-//
-
         callCoins()
 
-        // When swipe down, refresh page (callCoins() again)
-//        frag_market_reflay.setOnRefreshListener {
-//            frag_market_reflay.isRefreshing = true
-//        }
-        // Run the api call to get and display coin data every second
+
         mainHandler.post(object : Runnable {
             override fun run() {
                 callCoins()
@@ -132,9 +117,7 @@ class CoinFragment : Fragment() {
         mPref.setDuration(activity!!.applicationContext, savedSelectedDuration)
         mPref.setFiat(activity!!.applicationContext, savedSelectedCurrency)
         mPref.writePrefStatus(true)
-//        callCoins()
 
-        // When successful, stop showing refresh
         mCoinAdapter.notifyItemRangeChanged(0, mCoinAdapter.itemCount)
 
 
