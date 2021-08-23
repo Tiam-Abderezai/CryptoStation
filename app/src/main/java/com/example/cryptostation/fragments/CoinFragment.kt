@@ -30,6 +30,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.awaitResponse
 import retrofit2.converter.gson.GsonConverterFactory
+import java.lang.Exception
 import java.lang.Runnable
 import java.util.ArrayList
 
@@ -218,69 +219,78 @@ class CoinFragment : Fragment() {
             .create(API::class.java)
 
         GlobalScope.launch(Dispatchers.IO) {
-            val response = api.getAllCryptoData(mFiatName, mDuration).awaitResponse()
-            if (response.isSuccessful) {
-                val data = response.body()!!
-                withContext(Dispatchers.Main) {
-                    if (!mCoinResult.isEmpty()) {
-                        mCoinResult.clear()
-                    }
-                    var coins: Coin
-                    // Loop through the retrieved coin list
-                    // and store their attributes
-
-                    val coinSize = mCoinViewModel.readAllData.value?.size
-
-                    for (i: Int in 0..data.size - 1) {
-                        coins = Coin(
-                            0,
-                            data?.get(i)!!.coinId,
-                            data?.get(i)!!.symbol,
-                            data?.get(i)!!.name,
-                            data?.get(i)!!.imageUrl,
-                            data?.get(i)!!.currentPrice,
-                            data?.get(i)!!.price_change_24h,
-                            data?.get(i)!!.price_change_percentage_1h_in_currency,
-                            data?.get(i)!!.price_change_percentage_24h_in_currency,
-                            mFiatSymbol
-                        )
-                        // If the coinSize (Size of favorite starred coins)
-                        // is empty or null, ignores looping through it to prevent crash
-                        coinSize?.let {
-                            for (c: Int in 0..coinSize!! - 1) {
-                                if (coins.symbol.toLowerCase()
-                                        .equals(mCoinViewModel.readAllData.value!!.get(c).symbol.toLowerCase())
-                                ) {
-                                    coins = Coin(
-                                        0,
-                                        data?.get(i)!!.coinId,
-                                        data?.get(i)!!.symbol,
-                                        data?.get(i)!!.name,
-                                        data?.get(i)!!.imageUrl,
-                                        data?.get(i)!!.currentPrice,
-                                        data?.get(i)!!.price_change_24h,
-                                        data?.get(i)!!.price_change_percentage_1h_in_currency,
-                                        data?.get(i)!!.price_change_percentage_24h_in_currency,
-                                        mFiatSymbol
-                                    )
-                                    // Add collected coin attributes to result array
-                                    mCoinResult.add(coins)
-                                    // When successful, stop showing refresh
-                                    mCoinAdapter.notifyItemRangeChanged(0, mCoinAdapter.itemCount)
-                                }
-
-                            }
+            try {
+                val response = api.getAllCryptoData(mFiatName, mDuration).awaitResponse()
+                if (response.isSuccessful) {
+                    val data = response.body()!!
+                    withContext(Dispatchers.Main) {
+                        if (!mCoinResult.isEmpty()) {
+                            mCoinResult.clear()
                         }
+                        var coins: Coin
+                        // Loop through the retrieved coin list
+                        // and store their attributes
 
+                        val coinSize = mCoinViewModel.readAllData.value?.size
+
+                        for (i: Int in 0..data.size - 1) {
+                            coins = Coin(
+                                0,
+                                data?.get(i)!!.coinId,
+                                data?.get(i)!!.symbol,
+                                data?.get(i)!!.name,
+                                data?.get(i)!!.imageUrl,
+                                data?.get(i)!!.currentPrice,
+                                data?.get(i)!!.price_change_24h,
+                                data?.get(i)!!.price_change_percentage_1h_in_currency,
+                                data?.get(i)!!.price_change_percentage_24h_in_currency,
+                                mFiatSymbol
+                            )
+                            // If the coinSize (Size of favorite starred coins)
+                            // is empty or null, ignores looping through it to prevent crash
+                            coinSize?.let {
+                                for (c: Int in 0..coinSize!! - 1) {
+                                    if (coins.symbol.toLowerCase()
+                                            .equals(mCoinViewModel.readAllData.value!!.get(c).symbol.toLowerCase())
+                                    ) {
+                                        coins = Coin(
+                                            0,
+                                            data?.get(i)!!.coinId,
+                                            data?.get(i)!!.symbol,
+                                            data?.get(i)!!.name,
+                                            data?.get(i)!!.imageUrl,
+                                            data?.get(i)!!.currentPrice,
+                                            data?.get(i)!!.price_change_24h,
+                                            data?.get(i)!!.price_change_percentage_1h_in_currency,
+                                            data?.get(i)!!.price_change_percentage_24h_in_currency,
+                                            mFiatSymbol
+                                        )
+                                        // Add collected coin attributes to result array
+                                        mCoinResult.add(coins)
+                                        // When successful, stop showing refresh
+                                        mCoinAdapter.notifyItemRangeChanged(
+                                            0,
+                                            mCoinAdapter.itemCount
+                                        )
+                                    }
+
+                                }
+                            }
+
+
+                        }
+                        response.raw().close()
 
                     }
-
 
                 }
-            } else {
-                println("FAILED")
+                response.raw().close()
+            } catch (ex: Exception) {
+                println("FAILED: CoinFragment")
             }
+
         }
+
     }
 
 }

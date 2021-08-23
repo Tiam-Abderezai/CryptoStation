@@ -16,6 +16,7 @@ class SharedPref {
     private val PREF_DURATION: String = "duration"
     private val PREF_FIAT: String = "fiat"
     private val PREF_LANGUAGE: String = "language"
+    private val PREF_COIN: String = "coin"
 
     constructor(context: Context) {
         this.mContext = context
@@ -85,6 +86,16 @@ class SharedPref {
 
     fun getLanguage(ctx: Context): String? {
         return getSharedPref(ctx).getString(PREF_LANGUAGE,"")
+    }
+
+    fun setCoin(ctx: Context, coin: Int) {
+        val editor: SharedPreferences.Editor = getSharedPref(ctx).edit()
+        editor.putInt(PREF_COIN, coin)
+        editor.commit()
+    }
+
+    fun getCoin(ctx: Context): Int {
+        return getSharedPref(ctx).getInt(PREF_COIN, 0)
     }
 
 }

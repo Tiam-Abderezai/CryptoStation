@@ -18,18 +18,11 @@
         android:layout_height="80dp"
         />
 
-
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/frag_coin_reflay"
-        android:layout_marginTop="50dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/frag_coin_rv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layoutAnimation="@anim/anim_recyclerview"
+            android:layout_marginTop="40dp"
             />
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </FrameLayout>

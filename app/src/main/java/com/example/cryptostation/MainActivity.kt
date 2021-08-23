@@ -18,6 +18,7 @@ import com.example.cryptostation.SearchActivity
 import com.example.cryptostation.SettingsActivity
 import com.example.cryptostation.adapters.MainViewPagerAdapter
 import com.example.cryptostation.databinding.ActivityMainBinding
+import com.example.cryptostation.fragments.CoinFragment
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -121,4 +122,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
+
+
 }

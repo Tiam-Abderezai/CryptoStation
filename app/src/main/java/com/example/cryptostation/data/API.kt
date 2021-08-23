@@ -23,6 +23,7 @@ interface API {
     @GET("https://api.coingecko.com/api/v3/coins/{id}/market_chart/range?vs_currency=usd&from=1611216574&to=1611821374")
     fun getACryptoData(
         @Path("id") id: String
+//        @Path("timeScale") timeScale: Constants.T
 //        @Query("price_change_percentage") DURATION: String
     ): Call<JsonObject>
 
